@@ -95,6 +95,7 @@ const config = {
           //   label: 'N3',
           // },
           {to: '/docs/quickstart/intro', label: 'Quickstart', position: 'left'},
+          
           {
             href: 'https://github.com/Awareness-Labs/rainforest',
             label: 'GitHub',

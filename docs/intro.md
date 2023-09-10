@@ -40,6 +40,10 @@ sidebar_position: 1
 
 改成像是下面這樣，每一個 Operational Team 再提供一組 API，給內部使用，我需要用到什麼資料，我可以像是吃自助餐 Buffet，隨時選我想要的資料來使用。
 
+![](/img/domain.png)
+
+美景有了，現在就剩下實作的問題，原作者也給了下圖一樣的建議，我們一一仔細說明其內容！
+
 ![](/img/intro_data_product.png)
 
 ## 實作方式
@@ -51,13 +55,15 @@ sidebar_position: 1
 - 有自己邏輯該執行的 Code
 - 提供多種的資料格式
 
-
+### Kubernetes
 那我們就一個一個來解決吧，有自己的基礎設施最簡單的方式就是設計成 Kubernetes 的 StatefulSet 這項想要製作新的 Data Product 直接新增 YAML 就可以了。
 
+### NATS/JetStream
 接著就是我最頭疼的問題，Data 要保存在哪裡，我第一個想到的就是 NATS 這個是連台積電都再用的 CNCF 專案喔 (我甚至去聽過他們的演講)。
 
 NATS 以前只是一個 Message Broker，直到 v2.0 之後開始做得跟 kafka 一樣的有 Exactly-Once、Pull-based…。而且最重要的 NATS Image 只有 15MB 阿！
 
+### Embedded Database Engines
 好了，我現在手上有 Stream 可以用了，我只要寫一些 Code，就可以把 Stream 儲存的格式，直接轉化成各式各樣的類別，舉例來說：Dgraph 有開源一個 Go 的 Embedded Key-Value Engine，這個可以拿來當 rocksdb 用，而且 New York Times 的工程師還公開在演討會上分享自己怎麼用這個 Key-Value Engine 來開發。
 
 OLTP 的部分已經搞定了，解下來就是 OLAP，簡單科普一下，現代的 OLAP Engine 通常都不做 Storage 了，要分析的時候直接從像是 S3 的 Object Store 拉出來就好，像是 Trino、Velox、DuckDB。
