@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkawareness_labs_github_io=self.webpackChunkawareness_labs_github_io||[]).push([[843],{254:s=>{s.exports=JSON.parse('{"title":"Docs","slug":"/category/docs","permalink":"/docs/category/docs","navigation":{"previous":{"title":"What is Data Mesh ?","permalink":"/docs/intro"},"next":{"title":"Quickstart","permalink":"/docs/quickstart/intro"}}}')}}]);
