@@ -4,11 +4,11 @@ import styles from './styles.module.css';
 
 const FeatureList = [
   {
-    title: 'Open-Source',
+    title: 'Developer-Centric',
     Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
     description: (
       <>
-        We belief this project is a General Problem, so we Open-Source it!
+        We belief that developers can drive the future of data platform.
       </>
     ),
   },
