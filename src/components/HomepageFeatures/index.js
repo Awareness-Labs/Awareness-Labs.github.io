@@ -5,7 +5,7 @@ import styles from './styles.module.css';
 const FeatureList = [
   {
     title: 'Developer-Centric',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    Svg: require('@site/static/img/developer.svg').default,
     description: (
       <>
         We belief that developers can drive the future of data platform.
@@ -14,7 +14,7 @@ const FeatureList = [
   },
   {
     title: 'Ultra light-weight',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    Svg: require('@site/static/img/light.svg').default,
     description: (
       <>
         Rainforest control image is always under 50MB, and easy to deploy on kubernetes.
@@ -23,7 +23,7 @@ const FeatureList = [
   },
   {
     title: 'In one box',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    Svg: require('@site/static/img/box.svg').default,
     description: (
       <>
         Rainforest embbed OLTP, OLAP, Stream, Message Queue, and more in one box.

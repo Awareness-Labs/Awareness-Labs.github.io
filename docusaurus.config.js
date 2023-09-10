@@ -6,8 +6,8 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Rainforest',
-  tagline: 'we build Data Mesh and distributed systems',
+  title: 'RAINFOREST',
+  tagline: 'Ultra light-weight Data Mesh',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
@@ -76,12 +76,12 @@ const config = {
             position: 'left',
             label: 'What is Data Mesh?',
           },
-          {
-            type: 'docSidebar',
-            sidebarId: 'tutorialSidebar',
-            position: 'left',
-            label: 'Rainforest',
-          },
+          // {
+          //   type: 'docSidebar',
+          //   sidebarId: 'tutorialSidebar',
+          //   position: 'left',
+          //   label: 'Quickstart',
+          // },
           // {
           //   type: 'docSidebar',
           //   sidebarId: 'tutorialSidebar',
@@ -94,7 +94,7 @@ const config = {
           //   position: 'left',
           //   label: 'N3',
           // },
-          // {to: '/blog', label: 'Blog', position: 'left'},
+          {to: '/docs/quickstart/intro', label: 'Quickstart', position: 'left'},
           {
             href: 'https://github.com/Awareness-Labs/rainforest',
             label: 'GitHub',
