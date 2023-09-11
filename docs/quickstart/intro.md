@@ -5,6 +5,16 @@ sidebar_position: 1
 # Quickstart
 這個 Quickstart 的目的是讓使用者可以快速了解、使用 rainforest 的核心功能。
 
+## 複製 Repository
+``` 
+git clone https://github.com/Awareness-Labs/rainforest.git
+```
+
+## 安裝 Toolchain (注意！我是用 brew 所以要先安裝好喔)
+```
+bash script/install_toolchain.sh
+```
+
 ## 啟動 Rainforest Hub
 Rainforest 採取的架構是 Hub-Leaf (又稱作 Hub-Spoke) 的架構，在運行任何 Leaf 之前，建議先啟動 Rainforest Hub，以下指令可以啟動 Rainforest Hub。   
 ```
