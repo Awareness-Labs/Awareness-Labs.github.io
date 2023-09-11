@@ -5,17 +5,25 @@ sidebar_position: 1
 # Quickstart
 這個 Quickstart 的目的是讓使用者可以快速了解、使用 rainforest 的核心功能。
 
+## STEP-1: 取得原始碼和工具鍊
+
+
 ## 複製 Repository
 ``` 
 git clone https://github.com/Awareness-Labs/rainforest.git
 ```
+安裝 Process 管理器 (使用上會用到)
+```
+go install github.com/mattn/goreman@latest
+```
 
-## 安裝 Toolchain (注意！我是用 brew 所以要先安裝好喔)
+### 安裝 Toolchain (注意！我是用 brew 所以要先安裝好喔)
 ```
 bash script/install_toolchain.sh
 ```
+## STEP-2: 嘗試第一個 Rainforest Instance
 
-## 啟動 Rainforest Hub
+### 啟動 Rainforest Hub
 Rainforest 採取的架構是 Hub-Leaf (又稱作 Hub-Spoke) 的架構，在運行任何 Leaf 之前，建議先啟動 Rainforest Hub，以下指令可以啟動 Rainforest Hub。   
 ```
 cd cmd/rainforest_hub
@@ -31,7 +39,7 @@ goreman start
 * Leafnode connections: 7422 
   * 這個 Port 是用來處理 Leaf 連線的 Port，隸屬於這個 Hub 的 Leaf 都會經由這個 Port 溝通
 
-## 啟動第一個 Rainforest Leaf 
+### 啟動第一個 Rainforest Leaf 
 以下的指令可以啟動 Rainforest Leaf，通常 Rainforest Leaf 就是組織中一個團隊發布和訂閱 Data Product 的實體。
 ``` bash
 go run cmd/rainforest_leaf/rainforest_leaf.go \
@@ -53,7 +61,7 @@ go run cmd/rainforest_leaf/rainforest_leaf.go \
 現在系統的拓譜架構圖會像是下圖
 ![](./img/1_hub_leaf.jpg)
 
-## 建立一個 State Data Product
+## STEP-3: 建立一個 State Data Product
 接著我們建立一個 State Data Product，這個種類的 Data Product 專門用來處理狀態的儲存，我們可以直接透過 nats CLI 進行 API 呼叫。
 
 ``` bash
@@ -80,7 +88,7 @@ nats s ls --server=localhost:4111
 現在系統的拓譜架構圖會像是下圖
 ![](./img/2_add_dp.jpg)
 
-## 寫入 State 到 State Data Product
+### 寫入 State 到 State Data Product
 既然是 State Data Product，那我們不妨寫入一些 State 來做示範。
 
 當我們在上個步驟建立 State Data Product 的時候，我們其實建立了一個 Stream，並且限制每一個 Subject 只能儲存 1 則訊息，我們可以直接當成 Table 來操作。
@@ -111,7 +119,7 @@ nats s ls --server=localhost:4111
 │ STATE_OrdersState │ This is a State Data Product │ 2023-08-25 06:01:13 │ 9        │ 639 B │ 26.92s       │
 ╰───────────────────┴──────────────────────────────┴─────────────────────┴──────────┴───────┴──────────────╯
 ```
-## 我們嘗試從 State Data product 讀取看看 State
+### 我們嘗試從 State Data product 讀取看看 State
 ```
 nats subscribe '$RAINFOREST.DP.STATE.OrdersState.3' --last --server=localhost:4111
 
@@ -119,7 +127,7 @@ nats subscribe '$RAINFOREST.DP.STATE.OrdersState.3' --last --server=localhost:41
 value_3
 ```
 
-## 我還設計了一個 OLTP 可以直接變成 Sorted Map，嘗試看看 Range Query 吧! (可以直接開發成 Prod-Level RESTful API)
+### 我還設計了一個 OLTP 可以直接變成 Sorted Map，嘗試看看 Range Query 吧! (可以直接開發成 Prod-Level RESTful API)
 ``` bash
 nats request '$RAINFOREST.API.KV.*' \
 '{
@@ -161,7 +169,7 @@ nats s ls --server=localhost:4111
 │ STATE_OrdersState       │ This is a State Data Product │ 2023-08-25 06:01:13 │ 9        │ 639 B │ 3m46s        │
 ╰─────────────────────────┴──────────────────────────────┴─────────────────────┴──────────┴───────┴──────────────╯
 ```
-## 寫入 Event 到 Event Data Product
+### 寫入 Event 到 Event Data Product
 ``` bash
 nats publish '$RAINFOREST.DP.EVENT.ConversationEvent.1' \
 '{
@@ -236,18 +244,59 @@ nats publish '$RAINFOREST.DP.EVENT.ConversationEvent.9' \
 }' --server=localhost:4111
 ```
 
-## 我們嘗試從 Event Data product 讀取看看 Event
+### 我們嘗試從 Event Data product 讀取看看 Event
 ``` bash
 nats subscribe --stream=EVENT_ConversationEvent --all --server=localhost:4111
 ```
 
-## 我還設計了一個 OLAP 可以直接執行 SQL 指令，使用者可以直接 SQL Event Data Product
-``` sql
+### 我還設計了一個 OLAP 可以直接執行 SQL 指令，使用者可以直接 SQL Event Data Product
+``` bash
+duckdb
+```
+
+```
 SELECT * from './data/sink/sts-0/ConversationEvent.json';
+
+┌─────────┬─────────┬─────────────────────────────────────────────────┬─────────────────────┐
+│  from   │   to    │                     payload                     │      timestamp      │
+│ varchar │ varchar │                     varchar                     │      timestamp      │
+├─────────┼─────────┼─────────────────────────────────────────────────┼─────────────────────┤
+│ Tachun  │ Fred    │ Hi Fred how are you today                       │ 2023-08-25 08:00:00 │
+│ Fred    │ Tachun  │ Hello Tachun Im good thanks And you             │ 2023-08-25 08:01:00 │
+│ Tachun  │ Fred    │ Im doing well thanks for asking                 │ 2023-08-25 08:02:00 │
+│ Fred    │ Tachun  │ Great to hear Do you have plans for the weekend │ 2023-08-25 08:03:00 │
+│ Tachun  │ Fred    │ Yes Ill be visiting some friends How about you  │ 2023-08-25 08:04:00 │
+│ Fred    │ Tachun  │ I might go hiking if the weather is good        │ 2023-08-25 08:05:00 │
+│ Tachun  │ Fred    │ That sounds lovely Have a great time            │ 2023-08-25 08:06:00 │
+│ Fred    │ Tachun  │ Thanks You too Talk later                       │ 2023-08-25 08:07:00 │
+│ Tachun  │ Fred    │ Sure bye for now                                │ 2023-08-25 08:08:00 │
+└─────────┴─────────┴─────────────────────────────────────────────────┴─────────────────────┘
+
 ```
 
 
-## 啟動第二個 Rainforest Leaf
+或是例如：
+``` sql
+SELECT "payload" from './data/sink/sts-0/ConversationEvent.json';
+
+┌─────────────────────────────────────────────────┐
+│                     payload                     │
+│                     varchar                     │
+├─────────────────────────────────────────────────┤
+│ Hi Fred how are you today                       │
+│ Hello Tachun Im good thanks And you             │
+│ Im doing well thanks for asking                 │
+│ Great to hear Do you have plans for the weekend │
+│ Yes Ill be visiting some friends How about you  │
+│ I might go hiking if the weather is good        │
+│ That sounds lovely Have a great time            │
+│ Thanks You too Talk later                       │
+│ Sure bye for now                                │
+└─────────────────────────────────────────────────┘
+```
+
+
+## STEP-4: 啟動第二個 Rainforest Leaf
 各位應該已經體驗完 Rainforest 針對單一 Data Product 的功能了，現在我們來實現 Data Mesh 中自由取得 Data Product 的特色吧。
 
 我們假設一個情境有另外一個新建立的團隊想要加入 Data Mesh，那麼就如同前面的例子一樣建立一個 Leaf。
@@ -262,7 +311,7 @@ go run cmd/rainforest_leaf/rainforest_leaf.go \
 ```
 ![](./img/3_add_leaf.jpg)
 
-## 這時候我們要建立一個原有 Data Product 的副本，稱作 Source Data Product
+### 這時候我們要建立一個原有 Data Product 的副本，稱作 Source Data Product
 ``` bash
 nats request '$RAINFOREST.API.DP.CREATE.*' --server=localhost:4112 \
 '{
@@ -282,11 +331,11 @@ nats request '$RAINFOREST.API.DP.CREATE.*' --server=localhost:4112 \
 ```
 
 ![](./img/4_source.jpg)
-## 檢查看看 Data Product 是不是已經成功建立自己 Domain 的 Snapshot!
+### 檢查看看 Data Product 是不是已經成功建立自己 Domain 的 Snapshot!
 ``` bash
 nats s ls --server=localhost:4112
 ```
-## 就算源頭掛掉，還是可以讀到資料喔! 
+### 就算源頭掛掉，還是可以讀到資料喔! 
 先砍到 localhost:4111 的 Rainforest Leaf，然後再讀取看看。
 ``` bash
 nats request '$RAINFOREST.API.KV.*' \
@@ -300,7 +349,7 @@ nats request '$RAINFOREST.API.KV.*' \
 }
 ' --server=localhost:4112 | jq
 ```
-## 源頭重新啟動之後，繼續發布，Source Data Product 也能持續更新
+### 源頭重新啟動之後，繼續發布，Source Data Product 也能持續更新
 ``` bash
 go run cmd/rainforest_leaf/rainforest_leaf.go \
 --port=4111 \
@@ -319,7 +368,7 @@ nats publish '$RAINFOREST.DP.STATE.OrdersState.0' value_0_NEW_VERSION --server=l
 ``` bash
 nats subscribe --stream=STATE_SecondaryOrdersDataProduct --last --server=localhost:4112
 ```
-## 結論
+## STEP-5: 結論
 Rainforest 大概往以下方向設計
 * Data Product Scale 基本上無限大
 * 基礎設施和應用程式完全封裝成一個自動化的單位
